@@ -546,7 +546,7 @@ server.registerTool('cancel_watch', {
     }
 });
 server.registerTool('yield_turn', {
-    description: 'Sends a Ctl-C followed by two Enters to the gemini tmux session. Use this to end your turn and await results from a self-command or run-long-command. CRITICAL: Do not call any other tools in the same turn as this tool.',
+    description: 'Explicitly ends the turn. DO NOT ABUSE. Use ONLY when explicitly instructed by tools like run_long_command, self_command, gemini_sleep, or watch_log. NEVER use this just to "read logs", "take a nap", or pause after standard synchronous tools. CRITICAL: Do not call any other tools in the same turn as this tool.',
     inputSchema: z.object({}),
 }, async () => {
     // Check if we are in the correct tmux session BEFORE starting

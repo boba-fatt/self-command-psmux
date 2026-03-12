@@ -101,7 +101,15 @@ cancel_watch({
 Explicitly ends the turn immediately.
 
 #### Usage
-Use this tool only when you have triggered a long-running background task (like `self_command`, `run_long_command`, or `watch_log`) and need to wait for its completion, or when you explicitly need to end your turn to await further feedback or instructions from the user.
+**CRITICAL: DO NOT ABUSE THIS TOOL.** 
+Use this tool **ONLY** when you have triggered a long-running background task that *explicitly instructs you to yield* (like `self_command`, `run_long_command`, `gemini_sleep`, or `watch_log`) and you need to wait for its completion notification.
+
+**BANNED USAGES:**
+- Do **NOT** use this tool just because you are "reading logs" or need a moment to think.
+- Do **NOT** use this tool to "take a nap" or pause arbitrarily.
+- Do **NOT** use this tool after running standard, synchronous tools (like `run_shell_command`, `read_file`, etc.).
+
+Use it **ONLY** when the documentation of another tool explicitly says "**You MUST yield your turn immediately after calling this tool.**" If a tool does not say that, do not yield.
 
 **Tool Signature**
 ```typescript
