@@ -2,3 +2,4 @@
 *.log
 run-long-command/
 template/
+project_memory.db
