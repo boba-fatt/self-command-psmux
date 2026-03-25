@@ -4,10 +4,10 @@ const TEST_SESSION = 'gemini-test-stability';
 async function main() {
     // 1. Setup test session
     try {
-        execSync(`tmux kill-session -t ${TEST_SESSION} 2>/dev/null`);
+        execSync(`psmux kill-session -t ${TEST_SESSION} 2>/dev/null`);
     }
     catch (e) { }
-    execSync(`tmux new-session -d -s ${TEST_SESSION} -n main`);
+    execSync(`psmux new-session -d -s ${TEST_SESSION} -n main`);
     const target = `${TEST_SESSION}:0.0`;
     console.log(`Test session started: ${target}`);
     // 2. Start a "user cursor moving" simulator in background
@@ -16,10 +16,10 @@ async function main() {
     // If it returns true (stable) while cursor is moving, it confirms the bug.
     const typer = spawn('bash', ['-c', `
         # Type some text first so we have something to move over
-        tmux send-keys -t ${target} "Hello World"
+        psmux send-keys -t ${target} "Hello World"
         sleep 1
         for i in {1..15}; do
-            tmux send-keys -t ${target} Left
+            psmux send-keys -t ${target} Left
             sleep 2
         done
     `], { stdio: 'inherit' });
@@ -31,7 +31,7 @@ async function main() {
     console.log(`waitForStability returned: ${isStable} after ${duration}ms`);
     // Cleanup
     typer.kill();
-    execSync(`tmux kill-session -t ${TEST_SESSION}`);
+    execSync(`psmux kill-session -t ${TEST_SESSION}`);
     if (isStable) {
         console.error("FAIL: Detected stability while user was moving cursor! (Bug Confirmed)");
         process.exit(1); // We want to see this fail to confirm the bug

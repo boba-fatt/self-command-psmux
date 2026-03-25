@@ -111,25 +111,25 @@ describe('self_command MCP Server', () => {
     expect(mocks.registerTool).toHaveBeenCalledWith('run_long_command', expect.any(Object), expect.any(Function));
   });
 
-  it('should fail self_command if TMUX env var is missing', async () => {
+  it('should fail self_command if psmux env var is missing', async () => {
     delete process.env.TMUX;
     const result = await selfCommandFn({ command: 'help' });
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain("Error: Not running inside tmux session");
+    expect(result.content[0].text).toContain("Error: Not running inside psmux session");
   });
 
-  it('should fail self_command if tmux session name does not match', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+  it('should fail self_command if psmux session name does not match', async () => {
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('other-session\n');
 
     const result = await selfCommandFn({ command: 'help' });
 
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain("Error: Not running inside tmux session");
+    expect(result.content[0].text).toContain("Error: Not running inside psmux session");
   });
 
   it('self_command should return immediately and spawn the worker process', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('gemini-cli\n');
 
     const command = 'echo hello';
@@ -150,7 +150,7 @@ describe('self_command MCP Server', () => {
   });
 
   it('run_long_command should spawn process and notify on completion', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('gemini-cli\n');
 
     // Setup complex spawn mock for run_long_command
@@ -176,12 +176,12 @@ describe('self_command MCP Server', () => {
     await vi.runAllTimersAsync();
 
     // Verify notification was sent via tmux
-    // Logic: it calls sendNotification which calls execSync with tmux send-keys
-    expect(execSync).toHaveBeenCalledWith(expect.stringContaining('tmux send-keys'));
+    // Logic: it calls sendNotification which calls execSync with psmux send-keys
+    expect(execSync).toHaveBeenCalledWith(expect.stringContaining('psmux send-keys'));
   });
 
   it('yield_turn should spawn the yield worker process', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('gemini-cli\n');
 
     const result = await yieldTurnFn({});
@@ -196,7 +196,7 @@ describe('self_command MCP Server', () => {
   });
 
   it('gemini_sleep should spawn the sleep worker process', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('gemini-cli\n');
 
     const result = await geminiSleepFn({ seconds: 10 });
@@ -211,7 +211,7 @@ describe('self_command MCP Server', () => {
   });
 
   it('watch_log should spawn the watch worker process with defaults', async () => {
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
     (execSync as Mock).mockReturnValue('gemini-cli\n');
 
     const result = await watchLogFn({ file_path: '/tmp/log.txt' });

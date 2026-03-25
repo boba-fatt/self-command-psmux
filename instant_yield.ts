@@ -20,18 +20,18 @@ async function main() {
     const target = `${SESSION_NAME}:0.0`;
 
     // 0. Send Escape a few times to clear any partial input or modes
-    execSync(`tmux send-keys -t ${target} Escape`);
+    execSync(`psmux send-keys -t ${target} Escape`);
     await delay(100);
-    execSync(`tmux send-keys -t ${target} Escape`);
+    execSync(`psmux send-keys -t ${target} Escape`);
     await delay(100);
 
     // 1. Send C-c immediately
-    execSync(`tmux send-keys -t ${target} C-c`);
+    execSync(`psmux send-keys -t ${target} C-c`);
     await delay(100);
     // 2. Send Enters
-    execSync(`tmux send-keys -t ${target} Enter`);
+    execSync(`psmux send-keys -t ${target} Enter`);
     await delay(100);
-    execSync(`tmux send-keys -t ${target} Enter`);
+    execSync(`psmux send-keys -t ${target} Enter`);
   } catch (error) {
     process.exit(1);
   }

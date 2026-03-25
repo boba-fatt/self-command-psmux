@@ -1,6 +1,6 @@
 # Self Command Extension
 
-This extension provides tools that allow the Gemini CLI agent to control its own interface via tmux, wait for tasks, monitor files, and manage the workspace.
+This extension provides tools that allow the Gemini CLI agent to control its own interface via psmux, wait for tasks, monitor files, and manage the workspace.
 
 ## Tools
 
@@ -139,7 +139,7 @@ run_long_command({
 
 ### 7. send_keys
 
-Sends keystrokes to a specific tmux pane.
+Sends keystrokes to a specific psmux pane.
 
 #### Usage
 Use this tool to interact with TUI applications, answer interactive prompts (y/n), or send control signals like `C-c`.
@@ -162,7 +162,7 @@ send_keys({ keys: "Enter", pane_id: "%2" });
 
 ### 8. capture_pane
 
-Captures the visible text content of a tmux pane.
+Captures the visible text content of a psmux pane.
 
 #### Usage
 Use this tool to "see" what is happening in a pane, especially for checking the status of TUI apps or interactive commands.
@@ -199,7 +199,7 @@ Returns the ID of the new pane (e.g., `%2`).
 
 ### 10. close_pane
 
-Closes a specific tmux pane.
+Closes a specific psmux pane.
 
 #### Usage
 Use this tool to clean up panes created by `create_pane`.

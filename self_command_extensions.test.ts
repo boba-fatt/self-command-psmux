@@ -66,14 +66,14 @@ describe('self_command Extensions', () => {
     // Default spawn mock
     mocks.spawn.mockReturnValue({ unref: vi.fn() });
 
-    // Mock execSync to return expected values for tmux checks
+    // Mock execSync to return expected values for psmux checks
     (execSync as Mock).mockImplementation((cmd: string) => {
-        if (cmd.includes('tmux display-message')) return 'gemini-cli\n';
-        if (cmd.includes('tmux split-window')) return '%2\n';
-        if (cmd.includes('tmux capture-pane')) return 'captured content\n';
+        if (cmd.includes('psmux display-message')) return 'gemini-cli\n';
+        if (cmd.includes('psmux split-window')) return '%2\n';
+        if (cmd.includes('psmux capture-pane')) return 'captured content\n';
         return '';
     });
-    process.env.TMUX = '/tmp/tmux-1000/default,1234,0';
+    process.env.psmux = '/tmp/tmux-1000/default,1234,0';
 
     // Dynamically import to trigger tool registration
     // We need to re-import or reset modules to ensure registerTool is called again
@@ -109,28 +109,28 @@ describe('self_command Extensions', () => {
     expect(mocks.registerTool).toHaveBeenCalledWith('wait_for_idle', expect.any(Object), expect.any(Function));
   });
 
-  it('send_keys should execute tmux send-keys', async () => {
+  it('send_keys should execute psmux send-keys', async () => {
     const result = await sendKeysFn({ keys: 'ls -l', pane_id: '%1' });
     expect(result.content[0].text).toContain('Sent keys "ls -l" to pane %1');
-    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("tmux send-keys -t %1 'ls -l'"));
+    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("psmux send-keys -t %1 'ls -l'"));
   });
 
-  it('capture_pane should execute tmux capture-pane', async () => {
+  it('capture_pane should execute psmux capture-pane', async () => {
     const result = await capturePaneFn({ pane_id: '%1' });
     expect(result.content[0].text).toContain('captured content');
-    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("tmux capture-pane -p -t %1"), expect.anything());
+    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("psmux capture-pane -p -t %1"), expect.anything());
   });
 
-  it('create_pane should execute tmux split-window and return pane ID', async () => {
+  it('create_pane should execute psmux split-window and return pane ID', async () => {
     const result = await createPaneFn({ command: 'top', direction: 'horizontal' });
     expect(result.content[0].text).toContain('Created new pane %2 running "top"');
-    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("tmux split-window -P -F \"#{pane_id}\" -h 'top'"), expect.anything());
+    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("psmux split-window -P -F \"#{pane_id}\" -h 'top'"), expect.anything());
   });
 
-  it('close_pane should execute tmux kill-pane', async () => {
+  it('close_pane should execute psmux kill-pane', async () => {
     const result = await closePaneFn({ pane_id: '%2' });
     expect(result.content[0].text).toContain('Closed pane %2');
-    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("tmux kill-pane -t %2"));
+    expect(execSync).toHaveBeenCalledWith(expect.stringContaining("psmux kill-pane -t %2"));
   });
 
   it('wait_for_idle should spawn delayed_idle worker', async () => {
